@@ -97,7 +97,7 @@ Como responsable del proyecto, quiero ejecutar una evaluación automática con p
 - **FR-005**: Cada respuesta MUST incluir los fragmentos exactos utilizados y sus referencias para que el usuario pueda verificarlos.
 - **FR-006**: Cada respuesta sustantiva MUST incluir el aviso de que la información es orientativa y no constituye asesoramiento jurídico. Las respuestas de abstención y rechazo MUST conservar un aviso equivalente de alcance no jurídico.
 - **FR-007**: Cuando la evidencia recuperada no permita responder, el sistema MUST decirlo explícitamente y abstenerse de aportar contenido sustantivo no respaldado. Si solo una parte de la pregunta está respaldada, MUST separar la respuesta respaldada de lo que no consta.
-- **FR-008**: El sistema MUST validar que la pregunta no esté vacía y que no supere 2.000 caracteres. Para entradas inválidas MUST devolver un mensaje de validación y no generar una respuesta normativa.
+- **FR-008**: El sistema MUST validar que la pregunta no esté vacía y que no supere 1.000 caracteres. Para entradas inválidas MUST devolver un mensaje de validación y no generar una respuesta normativa.
 - **FR-009**: El sistema MUST rechazar preguntas en idiomas distintos del español e informar del idioma admitido, sin producir una respuesta sustantiva en otro idioma.
 - **FR-010**: Ante ambigüedad que no pueda resolverse con la evidencia, el sistema MUST pedir una aclaración antes de elegir una interpretación.
 - **FR-011**: El sistema MUST mantener las restricciones de fuente y alcance aunque la pregunta solicite ignorar instrucciones, utilizar otras fuentes o inventar citas.
@@ -129,7 +129,7 @@ Como responsable del proyecto, quiero ejecutar una evaluación automática con p
 
 - La fuente documental autorizada es la versión oficial del Reglamento (UE) 2024/1689; no se incorporan otras normas, guías ni interpretaciones externas.
 - El idioma de interacción del producto es el español. Una pregunta en otro idioma se rechaza, no se traduce de forma implícita.
-- Se fija un límite de entrada de 2.000 caracteres como valor inicial verificable para preguntas «demasiado largas»; cambios futuros deben actualizar la especificación y sus pruebas.
+- El límite de entrada es de 1.000 caracteres, conforme al plan técnico del proyecto.
 - Se fija un máximo de 150 palabras para el cuerpo de una respuesta estándar para concretar «clara y breve»; referencias, evidencia y aviso legal no cuentan para ese límite.
 - Las preguntas ambiguas pueden resolverse mediante una pregunta aclaratoria; no se asume una interpretación cuando pueda cambiar el sentido normativo.
 - El conjunto de evaluación y los informes se mantienen en el repositorio con control de versiones; la comparación requiere identificar qué versión del conjunto se utilizó.

@@ -1,0 +1,137 @@
+openapi: 3.1.0
+info:
+  title: Consulta AI Act API
+  version: 1.0.0
+  description: API local de orientación informativa basada exclusivamente en el Reglamento (UE) 2024/1689.
+servers:
+  - url: http://127.0.0.1:8000
+paths:
+  /ask:
+    post:
+      summary: Consultar el Reglamento
+      description: >-
+        Responde en español usando solo fragmentos recuperados del Reglamento. No constituye
+        asesoramiento jurídico. No se conserva ni registra el texto de la pregunta.
+      operationId: askQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AskRequest'
+            examples:
+              pregunta:
+                value:
+                  question: ¿Qué obligaciones impone el artículo 6?
+      responses:
+        '200':
+          description: Respuesta, abstención o rechazo de alcance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AskResponse'
+        '422':
+          description: Pregunta vacía, solo con espacios, demasiado larga, idioma no admitido, k inválido o cuerpo no válido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Fallo del generador o cita no respaldada; el texto inválido no se devuelve.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Índice normativo no disponible o no inicializado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /health:
+    get:
+      summary: Consultar estado del servicio
+      operationId: getHealth
+      responses:
+        '200':
+          description: Servicio e índice disponibles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: Servicio iniciado pero no está listo para responder.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+components:
+  schemas:
+    AskRequest:
+      type: object
+      additionalProperties: false
+      required: [question]
+      properties:
+        question:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Pregunta en español, no vacía ni formada solo por espacios; no se persiste ni se incluye en logs.
+        k:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 5
+          description: Número configurable de fragmentos; por defecto 5.
+    Evidence:
+      type: object
+      additionalProperties: false
+      required: [reference, text]
+      properties:
+        reference:
+          type: string
+          pattern: '^\[(Artículo [0-9]+|Considerando [0-9]+|Anexo [IVXLCDM]+)\]$'
+        text:
+          type: string
+          description: Pasaje exacto recuperado del texto oficial.
+    AskResponse:
+      type: object
+      additionalProperties: false
+      required: [answer, references, evidence, disclaimer, abstained]
+      properties:
+        answer:
+          type: string
+          description: Respuesta breve o explicación explícita de abstención.
+        references:
+          type: array
+          items:
+            type: string
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/Evidence'
+        disclaimer:
+          type: string
+          example: Información orientativa; no constituye asesoramiento jurídico.
+        abstained:
+          type: boolean
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required: [error, message]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+          description: Mensaje seguro que no repite la pregunta ni revela texto del modelo.
+    HealthResponse:
+      type: object
+      additionalProperties: false
+      required: [status, index_ready]
+      properties:
+        status:
+          type: string
+          enum: [ok, unavailable]
+        index_ready:
+          type: boolean
