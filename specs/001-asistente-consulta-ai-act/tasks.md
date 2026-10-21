@@ -45,9 +45,9 @@
 
 ### Tests de la historia US1
 
-- [ ] T011 [P] [US1] Probar extracción estructural, hash de fuente y fallo cerrado con HTML incompleto en `tests/unit/ingestion/test_html_parser.py`.
-- [ ] T012 [P] [US1] Probar fragmentación exacta por considerando, artículo, apartados de artículos largos y anexos en `tests/unit/ingestion/test_chunker.py`.
-- [ ] T013 [P] [US1] Probar generación local de embeddings, inserción idempotente en Chroma temporal y pipeline/script de ingesta con dependencias aisladas en `tests/integration/test_vector_index.py` y `tests/integration/test_ingestion_pipeline.py`.
+- [X] T011 [P] [US1] Probar extracción estructural, hash de fuente y fallo cerrado con HTML incompleto en `tests/unit/ingestion/test_html_parser.py`.
+- [X] T012 [P] [US1] Probar fragmentación exacta por considerando, artículo, apartados de artículos largos y anexos en `tests/unit/ingestion/test_chunker.py`.
+- [X] T013 [P] [US1] Probar generación local de embeddings, inserción idempotente en Chroma temporal y pipeline/script de ingesta con dependencias aisladas en `tests/integration/test_vector_index.py` y `tests/integration/test_ingestion_pipeline.py`.
 - [ ] T014 [P] [US1] Probar recuperación `k=5` por defecto, `k` configurado y metadatos de referencia en `tests/unit/retrieval/test_retriever.py`.
 - [ ] T015 [P] [US1] Probar prompt limitado al contexto, frase fija de abstención y respuesta en español con SDK Anthropic simulado en `tests/unit/generation/test_answer_generator.py`.
 - [ ] T016 [P] [US1] Probar aceptación de citas respaldadas y rechazo de citas no presentes en contexto en `tests/unit/generation/test_citation_validator.py`.
@@ -55,10 +55,10 @@
 
 ### Implementación de US1
 
-- [ ] T018 [US1] Obtener de EUR-Lex y guardar el HTML oficial español como `data/raw/regulation_es.html`; implementar parser local con identificación CELEX, metadatos de origen y error ante secciones ausentes en `src/consulta_ai_act/ingestion/html_parser.py`.
-- [ ] T019 [US1] Implementar fragmentación estructural con `chunk_id`, `canonical_reference`, tipo, número, título, apartado, índice y hash en `src/consulta_ai_act/ingestion/chunker.py`.
-- [ ] T020 [US1] Implementar script de ingesta que lee `data/raw/`, aplica el parser y fragmentador y actualiza el índice persistente en `scripts/ingest_regulation.py`.
-- [ ] T021 [US1] Implementar adaptador local sentence-transformers y almacenamiento/consulta Chroma `PersistentClient` en `src/consulta_ai_act/retrieval/vector_store.py`.
+- [X] T018 [US1] Obtener de EUR-Lex y guardar el HTML oficial español como `data/raw/regulation_es.html`; implementar parser local con identificación CELEX, metadatos de origen y error ante secciones ausentes en `src/consulta_ai_act/ingestion/html_parser.py`.
+- [X] T019 [US1] Implementar fragmentación estructural con `chunk_id`, `canonical_reference`, tipo, número, título, apartado, índice y hash en `src/consulta_ai_act/ingestion/chunker.py`.
+- [X] T020 [US1] Implementar script de ingesta que lee `data/raw/`, aplica el parser y fragmentador y actualiza el índice persistente en `scripts/ingest_regulation.py`.
+- [X] T021 [US1] Implementar adaptador local sentence-transformers y almacenamiento/consulta Chroma `PersistentClient` en `src/consulta_ai_act/retrieval/vector_store.py`.
 - [ ] T022 [US1] Implementar recuperación top-k configurable con `k=5` predeterminado, retorno de fragmentos con metadatos y exposición de puntuación de relevancia para abstención calibrable en `src/consulta_ai_act/retrieval/retriever.py`.
 - [ ] T023 [US1] Implementar cliente oficial Anthropic y prompt de respuesta únicamente desde contexto delimitado, con modelo y API key desde configuración en `src/consulta_ai_act/generation/answer_generator.py`.
 - [ ] T024 [US1] Implementar normalización y validación determinista de citas contra referencias de fragmentos recuperados en `src/consulta_ai_act/generation/citation_validator.py`; no devolver respuesta con cita inválida.

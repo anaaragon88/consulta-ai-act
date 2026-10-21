@@ -25,7 +25,9 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["src", "."]
+include = ["consulta_ai_act*", "scripts*"]
+exclude = ["tests*"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"

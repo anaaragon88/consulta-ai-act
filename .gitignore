@@ -12,6 +12,8 @@ build/
 chroma_db/
 data/raw/*
 !data/raw/.gitkeep
+data/debug/*
+!data/debug/chunks.jsonl
 .cache/
 .DS_Store
 *.tmp
