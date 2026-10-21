@@ -133,6 +133,7 @@ def _make_chunk(
     text: str,
     paragraph_number: str | None,
     chunk_index: int,
+    locator: str | None = None,
 ) -> RegulationChunk:
     reference_type = {
         "articulo": "Artículo",
@@ -141,7 +142,10 @@ def _make_chunk(
     }[unit_type]
     canonical_reference = f"[{reference_type} {number}]"
     content_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
-    identity = f"{source.source_id}:{unit_type}:{number}:{paragraph_number or 'all'}:{chunk_index}"
+    identity = (
+        f"{source.source_id}:{unit_type}:{number}:{paragraph_number or 'all'}:"
+        f"{locator or ''}:{chunk_index}"
+    )
     chunk_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
     return RegulationChunk(
         chunk_id=chunk_id,
@@ -154,4 +158,5 @@ def _make_chunk(
         unit_title=title,
         paragraph_number=paragraph_number,
         chunk_index=chunk_index,
+        locator=locator,
     )

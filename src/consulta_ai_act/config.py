@@ -20,6 +20,7 @@ class Settings:
     retrieval_max_k: int
     retrieval_min_similarity: float
     max_question_length: int
+    max_chunk_characters: int
     chroma_path: Path
     regulation_path: Path
     evaluation_dataset_path: Path
@@ -37,12 +38,13 @@ class Settings:
             anthropic_model=os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-5-20250929").strip(),
             embedding_model=os.getenv(
                 "EMBEDDING_MODEL",
-                "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "intfloat/multilingual-e5-small",
             ).strip(),
             retrieval_k=_read_int("RETRIEVAL_K", 5),
             retrieval_max_k=_read_int("RETRIEVAL_MAX_K", 20),
             retrieval_min_similarity=_read_float("RETRIEVAL_MIN_SIMILARITY", 0.0),
             max_question_length=_read_int("MAX_QUESTION_LENGTH", 1000),
+            max_chunk_characters=_read_int("MAX_CHUNK_CHARACTERS", 1500),
             chroma_path=Path(os.getenv("CHROMA_PATH", "chroma_db")),
             regulation_path=Path(os.getenv("REGULATION_PATH", "data/raw/regulation_es.html")),
             evaluation_dataset_path=Path(
@@ -66,6 +68,8 @@ class Settings:
             raise ValueError("RETRIEVAL_K must be between 1 and RETRIEVAL_MAX_K")
         if self.max_question_length < 1:
             raise ValueError("MAX_QUESTION_LENGTH must be at least 1")
+        if self.max_chunk_characters < 1:
+            raise ValueError("MAX_CHUNK_CHARACTERS must be at least 1")
         if not 0.0 <= self.retrieval_min_similarity <= 1.0:
             raise ValueError("RETRIEVAL_MIN_SIMILARITY must be between 0 and 1")
         if self.log_level not in {"CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"}:

@@ -13,7 +13,9 @@ SOURCE_URL = "https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=CELEX:320
 class DeterministicEmbedder:
     model_name = "test-deterministic-embedding-v1"
 
-    def encode(self, texts: Sequence[str]) -> Sequence[Sequence[float]]:
+    def encode(
+        self, texts: Sequence[str], *, input_type: str = "passage"
+    ) -> Sequence[Sequence[float]]:
         vectors = []
         for text in texts:
             vector = [float(len(text) % 97 + 1), float(text.lower().count("reglamento") + 1), 1.0]
@@ -36,6 +38,7 @@ def test_chroma_upsert_is_idempotent_and_query_keeps_metadata(tmp_path: Path) ->
 
     assert len(results) == min(5, len(chunks))
     assert all(item.chunk.canonical_reference for item in results)
+    assert all(not item.chunk.text.startswith(("query: ", "passage: ")) for item in results)
     assert all(0 <= item.score <= 1 for item in results)
 
     reopened = ChromaVectorStore(tmp_path / "chroma", embedder)
@@ -43,7 +46,9 @@ def test_chroma_upsert_is_idempotent_and_query_keeps_metadata(tmp_path: Path) ->
 
 
 def test_store_refuses_to_reuse_collection_with_different_embedding_model(tmp_path: Path) -> None:
-    ChromaVectorStore(tmp_path / "chroma", DeterministicEmbedder())
+    _, chunks = chunk_regulation_html(FIXTURE.read_bytes(), source_url=SOURCE_URL)
+    existing = ChromaVectorStore(tmp_path / "chroma", DeterministicEmbedder())
+    existing.upsert(chunks)
 
     class DifferentEmbedder(DeterministicEmbedder):
         model_name = "another-model"

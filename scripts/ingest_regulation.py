@@ -10,7 +10,11 @@ from pathlib import Path
 from typing import Any
 
 from consulta_ai_act.config import Settings
-from consulta_ai_act.ingestion.chunker import chunk_regulation_file, chunk_to_json_dict
+from consulta_ai_act.ingestion.chunker import (
+    DEFAULT_MAX_CHUNK_CHARACTERS,
+    chunk_regulation_file,
+    chunk_to_json_dict,
+)
 from consulta_ai_act.ingestion.html_parser import PUBLICATIONS_SOURCE_URL
 from consulta_ai_act.models import RegulationChunk
 from consulta_ai_act.retrieval.vector_store import ChromaVectorStore, SentenceTransformerEmbedder, TextEmbedder
@@ -52,14 +56,14 @@ def ingest_regulation(
     chroma_path: str | Path,
     debug_output_path: str | Path,
     embedder: TextEmbedder | None = None,
-    max_article_chars: int = 4_000,
+    max_chunk_characters: int = DEFAULT_MAX_CHUNK_CHARACTERS,
     reset_index: bool = False,
 ) -> tuple[list[RegulationChunk], dict[str, Any]]:
     """Parse, chunk, persist debug records, and upsert the regulation index."""
     _, chunks = chunk_regulation_file(
         source_path,
         source_url=PUBLICATIONS_SOURCE_URL,
-        max_article_chars=max_article_chars,
+        max_chunk_characters=max_chunk_characters,
     )
     write_chunks_jsonl(chunks, debug_output_path)
     active_embedder = embedder or SentenceTransformerEmbedder(
@@ -87,7 +91,11 @@ def main() -> None:
     parser.add_argument("--source", type=Path, default=settings.regulation_path)
     parser.add_argument("--chroma-path", type=Path, default=settings.chroma_path)
     parser.add_argument("--debug-output", type=Path, default=Path("data/debug/chunks.jsonl"))
-    parser.add_argument("--max-article-chars", type=int, default=4_000)
+    parser.add_argument(
+        "--max-chunk-characters",
+        type=int,
+        default=settings.max_chunk_characters,
+    )
     parser.add_argument("--reset-index", action="store_true")
     args = parser.parse_args()
 
@@ -95,7 +103,7 @@ def main() -> None:
         source_path=args.source,
         chroma_path=args.chroma_path,
         debug_output_path=args.debug_output,
-        max_article_chars=args.max_article_chars,
+        max_chunk_characters=args.max_chunk_characters,
         reset_index=args.reset_index,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))

@@ -41,10 +41,12 @@ Validaciones mínimas:
 
 ## Ingesta e índice
 
-Colocar o actualizar el HTML oficial en `data/raw/`, ejecutar la ingesta y verificar que el índice
-persistente se crea en `chroma_db/`. La segunda ejecución con fuente y configuración iguales debe
-ser idempotente, sin duplicar fragmentos. Revisar cantidad por tipo documental y comparar una
-muestra de texto y metadatos con el origen.
+Colocar o actualizar el HTML oficial en `data/raw/`, ejecutar la ingesta con el límite por defecto
+de 1.500 caracteres y verificar que el índice persistente se crea en `chroma_db/`. La subdivisión
+respeta apartados/definiciones, letras, puntos, secciones y párrafos antes de recurrir a frases;
+cada subfragmento mantiene la referencia jurídica y su localizador. La segunda ejecución con
+fuente y configuración iguales debe ser idempotente, sin duplicar fragmentos. Revisar cantidades
+por tipo y longitudes, y contrastar una muestra con el origen.
 
 ## Servicio y escenarios de aceptación
 

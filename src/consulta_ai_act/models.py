@@ -35,6 +35,7 @@ class RegulationChunk:
     unit_title: str | None = None
     paragraph_number: str | None = None
     chunk_index: int = 0
+    locator: str | None = None
 
     def __post_init__(self) -> None:
         if not self.chunk_id.strip():

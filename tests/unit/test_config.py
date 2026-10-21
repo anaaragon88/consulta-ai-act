@@ -13,8 +13,9 @@ def test_settings_use_safe_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
     assert settings.retrieval_k == 5
     assert settings.retrieval_max_k == 20
     assert settings.max_question_length == 1000
+    assert settings.max_chunk_characters == 1500
     assert settings.anthropic_api_key == ""
-    assert settings.embedding_model.endswith("paraphrase-multilingual-MiniLM-L12-v2")
+    assert settings.embedding_model == "intfloat/multilingual-e5-small"
 
 
 @pytest.mark.parametrize(
@@ -25,6 +26,7 @@ def test_settings_use_safe_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
         ("RETRIEVAL_K", "not-an-integer"),
         ("RETRIEVAL_MAX_K", "0"),
         ("MAX_QUESTION_LENGTH", "0"),
+        ("MAX_CHUNK_CHARACTERS", "0"),
         ("RETRIEVAL_MIN_SIMILARITY", "1.1"),
         ("RETRIEVAL_MIN_SIMILARITY", "not-a-number"),
         ("LOG_LEVEL", "TRACE"),

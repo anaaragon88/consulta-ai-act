@@ -22,6 +22,14 @@
   artículo; la referencia canónica conserva la cita jurídica requerida.
 - **Alternativas consideradas**: descarga automática en cada ingesta y fragmentación por longitud
   arbitraria. Se descartan por menor reproducibilidad y porque pueden separar unidades jurídicas.
+- **Regla de subdivisión**: ningún fragmento del corpus supera 1.500 caracteres. En artículos se
+  priorizan apartados y definiciones numeradas del artículo 3; en anexos, secciones, puntos y letras;
+  en considerandos, párrafos y frases. Si una unidad estructural supera el umbral, se divide por
+  frases. Cada subfragmento conserva su referencia canónica y añade un `locator`, como «definición
+  12», «letra a)», «punto 12», «Sección A» o «frase 2».
+- **Justificación**: el límite reduce la exposición al truncamiento del encoder de 512 tokens y
+  preserva las fronteras semánticas y citas normativas. Los textos del Reglamento y su evidencia
+  mostrada no se alteran; solo se subdividen para recuperación.
 - **Riesgo**: no se pudo extraer contenido significativo del HTML de EUR-Lex con el lector web
   utilizado durante esta investigación. El parser debe probarse contra el HTML oficial real y
   fixtures locales antes de aceptar la indexación. Si la estructura cambia o faltan secciones, la
@@ -29,15 +37,21 @@
 
 ## Embeddings
 
-- **Decisión**: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`, local, configurado
-  por identificador de modelo. Usar exactamente el mismo modelo en ingesta y consulta.
-- **Justificación**: la documentación de Sentence Transformers identifica el modelo como
-  multilingüe para más de 50 idiomas, incluido español; es más compacto que multilingual MPNet.
-  El rendimiento específico en lenguaje regulatorio se decidirá con el dataset y `recall@5`.
-- **Alternativas consideradas**: `paraphrase-multilingual-mpnet-base-v2`, de mayor tamaño, y
-  `distiluse-base-multilingual-cased-v2`, multilingüe con menor rendimiento general reportado en
-  la tabla de benchmarks consultada.
-- **Fuente**: [Modelos preentrenados de Sentence Transformers](https://sbert.net/docs/sentence_transformer/pretrained_models.html).
+- **Decisión**: `intfloat/multilingual-e5-small`, cargado localmente mediante Sentence
+  Transformers. Su longitud máxima documentada es 512 tokens. Añadir `passage: ` a cada fragmento
+  al indexar y `query: ` a cada consulta al recuperar. El prefijo se aplica a la entrada del
+  encoder; el texto normativo sin prefijo se conserva en Chroma y como evidencia devuelta.
+- **Justificación**: el model card indica que los prefijos diferenciados son necesarios para
+  recuperación asimétrica, admite más de 90 idiomas e indica entradas de hasta 512 tokens. El
+  modelo anterior, `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`, tenía
+  `max_seq_length=128`, lo que truncaba gran parte de los fragmentos extensos. E5 amplía el contexto
+  a cuatro veces esa longitud y la subdivisión estructural a 1.500 caracteres reduce aún más la
+  probabilidad de truncamiento. El resultado se verificará contando tokens con el tokenizer real y
+  mediante `recall@5` en el dataset versionado.
+- **Alternativa descartada**: mantener MiniLM-L12 por su menor tamaño; su contexto de 128 tokens es
+  demasiado corto para estos fragmentos legales. `multilingual-e5-base/large` se descartan por
+  mayor consumo computacional, sin evidencia aún de una mejora proporcional en este corpus.
+- **Fuente**: [Model card de multilingual-e5-small](https://huggingface.co/intfloat/multilingual-e5-small).
 
 ## Base vectorial
 

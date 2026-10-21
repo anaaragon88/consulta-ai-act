@@ -27,7 +27,7 @@ Beautiful Soup, python-dotenv y langdetect; pytest y HTTPX para pruebas.
 
 **Objetivos de rendimiento**: sin SLA inicial de latencia o concurrencia. La evaluación registra duración y configuración para establecer una línea base; un SLA futuro requerirá mediciones y actualización de alcance.
 
-**Restricciones**: única fuente admisible: Reglamento oficial en español; entrada no vacía de hasta 1.000 caracteres; `k=5` por defecto y configurable; las citas solo son válidas si pertenecen a fragmentos recuperados. No registrar preguntas ni credenciales.
+**Restricciones**: única fuente admisible: Reglamento oficial en español; entrada no vacía de hasta 1.000 caracteres; `k=5` por defecto y configurable; los fragmentos de embedding no superan 1.500 caracteres; las citas solo son válidas si pertenecen a fragmentos recuperados. No registrar preguntas ni credenciales.
 
 **Escala/alcance**: una norma, interfaz en español, sin cuentas ni historial; corpus limitado al Reglamento y almacenamiento local.
 
@@ -94,7 +94,12 @@ README.md
 
 ## Fase 0: Investigación y decisiones
 
-Las decisiones y alternativas se detallan en [research.md](research.md). Se selecciona `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`: admite español y más de 50 idiomas y es más ligero que la variante multilingual MPNet. El conjunto de evaluación permitirá reemplazarlo si `recall@5` resulta insuficiente. El mismo modelo se configura explícitamente al ingerir y consultar. Chroma usa `PersistentClient` con `chroma_db/`.
+Las decisiones y alternativas se detallan en [research.md](research.md). Se selecciona
+`intfloat/multilingual-e5-small`, ejecutado localmente mediante Sentence Transformers. Su contexto
+máximo es de 512 tokens y el model card requiere `passage: ` para documentos y `query: ` para
+consultas. Su límite de tokens es mayor que los 128 tokens medidos en el modelo anterior; la
+subdivisión estructural a un máximo de 1.500 caracteres reduce el riesgo de truncamiento sin
+romper definiciones, listas o párrafos. Chroma usa `PersistentClient` con `chroma_db/`.
 
 El operador guarda el HTML oficial de EUR-Lex antes de la ingesta; el parser procesa el archivo local, no contenido de red variable en cada ejecución. FastAPI sirve `/ask`, `/health` y la página HTML. Anthropic se invoca mediante su SDK oficial y Messages API; el modelo y la clave son variables de entorno obligatorias, sin credenciales o valores secretos en código.
 
@@ -102,7 +107,12 @@ El operador guarda el HTML oficial de EUR-Lex antes de la ingesta; el parser pro
 
 **Decisiones**:
 
-- Un fragmento por considerando, artículo y anexo; los artículos largos se subdividen por apartado y conservan una referencia jurídica canónica más un identificador de fragmento único.
+- Los documentos se subdividen a un máximo de 1.500 caracteres, respetando apartados y definiciones
+    numeradas de artículos, letras/puntos/secciones de anexos y párrafos de considerandos. Si una
+    unidad estructural supera el límite, se divide por frases. Cada fragmento conserva la referencia
+    canónica y añade un localizador descriptivo como «punto 12», «definición 3» o «frase 2».
+- E5 recibe `passage: {texto}` al indexar y `query: {pregunta}` al recuperar. Los prefijos se
+    aplican solo a las entradas del encoder; el texto original sin prefijo se conserva como evidencia.
 - `k=5` es el valor por defecto de recuperación, configurable por entorno o configuración validada.
 - `recall@5` cuenta las referencias esperadas presentes en los cinco primeros fragmentos recuperados, dividido por el total de referencias esperadas.
 - La cita se normaliza como `[Artículo 6]`, `[Considerando 12]` o `[Anexo III]`; la validación compara tipo y número normalizados con los metadatos de los fragmentos recuperados.
