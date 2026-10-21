@@ -15,7 +15,7 @@ Se construirá un asistente RAG de una sola fuente que responde en español sobr
 **Lenguaje/versión**: Python 3.11 o superior; uv administra el proyecto y las dependencias.
 
 **Dependencias principales**: FastAPI, Chroma, sentence-transformers, SDK oficial de Anthropic,
-Beautiful Soup y python-dotenv; pytest y HTTPX para pruebas.
+Beautiful Soup, python-dotenv y langdetect; pytest y HTTPX para pruebas.
 
 **Almacenamiento**: HTML oficial en `data/raw/`; preguntas de evaluación en `data/eval/questions.jsonl`; base vectorial persistente en `chroma_db/`; resultados en `evals/results/`. `.env` contiene configuración local y credenciales, y no se versiona.
 
@@ -110,6 +110,12 @@ El operador guarda el HTML oficial de EUR-Lex antes de la ingesta; el parser pro
 - Los informes de evaluación incluyen fecha UTC, versión/hash del dataset, configuración (modelo de embeddings, `k`, modelo generativo y parámetros no secretos) y métricas.
 - El límite de entrada es 1.000 caracteres, sustituyendo el supuesto preliminar de 2.000 de la especificación inicial.
 - No se establece SLA de latencia ni disponibilidad para la primera versión; se conservarán mediciones como línea base.
+- La API usa `langdetect` con semilla fija: acepta español solo si la probabilidad detectada es
+    >=0,80; rechaza otros idiomas y entradas ambiguas antes de llamar a Anthropic. La detección no
+    decide contenido jurídico ni permite que el modelo traduzca una consulta no admitida.
+- La abstención usa un umbral de similitud configurable; se registra la configuración y se calibra
+    en el dataset etiquetado, no se inventa un valor universal. No se genera una respuesta si ningún
+    resultado supera el umbral.
 
 ## Fase 1: Diseño y contratos
 

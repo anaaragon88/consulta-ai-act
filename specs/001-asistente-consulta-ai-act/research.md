@@ -62,6 +62,19 @@
 - **Alternativas consideradas**: recall binario por caso (pierde distinción si hay varias
   referencias) y contar solo citas de la respuesta (no mide recuperación independiente).
 
+## Validación del idioma
+
+- **Decisión**: `langdetect` con semilla fija para una clasificación reproducible antes de la
+  generación; aceptar español solo si su probabilidad detectada es >=0,80 y rechazar otros idiomas
+  o entradas ambiguas. Aplicar esta decisión solo al idioma de entrada, nunca para inferir el
+  contenido jurídico.
+- **Justificación**: la especificación requiere rechazar entradas en idiomas distintos del español;
+  sin clasificación explícita, el comportamiento dependería del modelo generativo y su prompt.
+- **Alternativas consideradas**: heurísticas manuales (frágiles para preguntas cortas y términos
+  compartidos) y enviar entradas de idioma desconocido al modelo (no garantiza el límite de idioma).
+- **Limitación**: consultas muy cortas pueden ser ambiguas para cualquier detector; con probabilidad
+  de español inferior a 0,80, pedir reformular en español en vez de producir respuesta normativa.
+
 ## Generación y validación de citas
 
 - **Decisión**: SDK oficial de Anthropic para Python y Messages API. Cliente inicializado al iniciar
