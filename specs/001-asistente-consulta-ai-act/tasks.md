@@ -19,21 +19,21 @@
 
 **Objetivo**: inicializar el paquete Python reproducible y proteger secretos y artefactos locales.
 
-- [ ] T001 Crear `pyproject.toml` con Python >=3.11, dependencias de ejecución FastAPI, Chroma, sentence-transformers, SDK Anthropic, Beautiful Soup, python-dotenv y langdetect; añadir pytest y HTTPX como dependencias de desarrollo.
-- [ ] T002 [P] Configurar `.gitignore` para excluir `.env`, `.venv/`, `chroma_db/`, cachés de modelos y artefactos temporales, conservando `data/eval/questions.jsonl` y `evals/results/`.
-- [ ] T003 Crear `.env.example` con nombres de configuración no secreta y valores vacíos o de ejemplo no válidos; incluir `ANTHROPIC_API_KEY`, modelo generativo, modelo de embeddings, `RETRIEVAL_K` y ruta de Chroma.
-- [ ] T004 Crear el paquete `src/consulta_ai_act/` y sus subpaquetes `ingestion/`, `retrieval/`, `generation/`, `api/` y `evaluation/`, con inicializadores mínimos.
-- [ ] T005 Configurar pytest y rutas de importación del paquete en `pyproject.toml`; crear `tests/unit/`, `tests/integration/` y `tests/contract/` con archivos `__init__.py` solo si son necesarios para imports.
+- [X] T001 Crear `pyproject.toml` con Python >=3.11, dependencias de ejecución FastAPI, Chroma, sentence-transformers, SDK Anthropic, Beautiful Soup, python-dotenv y langdetect; añadir pytest y HTTPX como dependencias de desarrollo.
+- [X] T002 [P] Configurar `.gitignore` para excluir `.env`, `.venv/`, `chroma_db/`, cachés de modelos y artefactos temporales, conservando `data/eval/questions.jsonl` y `evals/results/`.
+- [X] T003 Crear `.env.example` con nombres de configuración no secreta y valores vacíos o de ejemplo no válidos; incluir `ANTHROPIC_API_KEY`, modelo generativo, modelo de embeddings, `RETRIEVAL_K` y ruta de Chroma.
+- [X] T004 Crear el paquete `src/consulta_ai_act/` y sus subpaquetes `ingestion/`, `retrieval/`, `generation/`, `api/` y `evaluation/`, con inicializadores mínimos.
+- [X] T005 Configurar pytest y rutas de importación del paquete en `pyproject.toml`; crear `tests/unit/`, `tests/integration/` y `tests/contract/` con archivos `__init__.py` solo si son necesarios para imports.
 
 ## Fase 2: Fundamentos bloqueantes
 
 **Objetivo**: fijar configuración validada, tipos compartidos y manejo seguro de errores antes de las historias.
 
-- [ ] T006 [P] Implementar configuración tipada y validada desde variables de entorno en `src/consulta_ai_act/config.py`, incluyendo límite de 1.000 caracteres, `k=5`, máximo configurable `k=20`, modelo generativo, modelo de embeddings y directorios.
-- [ ] T007 [P] Definir tipos compartidos de fuente, fragmento, evidencia y respuesta en `src/consulta_ai_act/models.py`, manteniendo separados `chunk_id` y referencia jurídica canónica.
-- [ ] T008 Crear logging estructurado y excepciones seguras en `src/consulta_ai_act/logging_config.py` y `src/consulta_ai_act/errors.py`; filtrar texto de preguntas, prompts, respuestas completas y credenciales.
-- [ ] T009 Añadir tests fundacionales en `tests/unit/test_config.py`, `tests/unit/test_models.py` y `tests/unit/test_logging_config.py` para límites de configuración, metadatos y ausencia de datos sensibles en logs.
-- [ ] T010 Crear fixtures HTML locales de prueba en `tests/fixtures/regulation_sample.html`, cubriendo considerando, artículo con apartados, título y anexo sin incluir credenciales ni depender de red.
+- [X] T006 [P] Implementar configuración tipada y validada desde variables de entorno en `src/consulta_ai_act/config.py`, incluyendo límite de 1.000 caracteres, `k=5`, máximo configurable `k=20`, modelo generativo, modelo de embeddings y directorios.
+- [X] T007 [P] Definir tipos compartidos de fuente, fragmento, evidencia y respuesta en `src/consulta_ai_act/models.py`, manteniendo separados `chunk_id` y referencia jurídica canónica.
+- [X] T008 Crear logging estructurado y excepciones seguras en `src/consulta_ai_act/logging_config.py` y `src/consulta_ai_act/errors.py`; filtrar texto de preguntas, prompts, respuestas completas y credenciales.
+- [X] T009 Añadir tests fundacionales en `tests/unit/test_config.py`, `tests/unit/test_models.py` y `tests/unit/test_logging_config.py` para límites de configuración, metadatos y ausencia de datos sensibles en logs.
+- [X] T010 Crear fixtures HTML locales de prueba en `tests/fixtures/regulation_sample.html`, cubriendo considerando, artículo con apartados, título y anexo sin incluir credenciales ni depender de red.
 
 **Punto de control**: configuración, tipos compartidos, privacidad de logs y fixtures están establecidos; ninguna historia debe duplicar estas bases.
 
