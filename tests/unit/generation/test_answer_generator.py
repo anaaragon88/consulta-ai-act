@@ -51,6 +51,7 @@ def test_generator_sends_delimited_context_and_returns_spanish_answer() -> None:
         client.messages.kwargs["system"]
     ).lower()
     assert client.messages.kwargs["model"] == settings.anthropic_model
+    assert "temperature" not in client.messages.kwargs
 
 
 def test_generator_uses_fixed_abstention_for_empty_context() -> None:

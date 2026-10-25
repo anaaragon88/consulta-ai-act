@@ -54,7 +54,6 @@ class AnswerGenerator:
         response = self.client.messages.create(
             model=self.settings.anthropic_model,
             max_tokens=700,
-            temperature=0,
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": message}],
         )
