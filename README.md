@@ -75,6 +75,17 @@ curl -X POST 'http://127.0.0.1:8000/ask' \
 
 La respuesta incluye el texto generado, las referencias, los fragmentos de evidencia, un aviso legal y si el sistema se abstuvo.
 
+### Preguntas sugeridas para una demo
+
+Estas preguntas se refieren a disposiciones concretas del Reglamento, presentes en el índice, y suelen ser buenos ejemplos para mostrar respuestas con evidencia y citas:
+
+- **Objeto del Reglamento:** «Según el artículo 1, ¿cuáles son los objetivos principales del Reglamento?»
+- **Prácticas prohibidas:** «¿Qué tipos de prácticas de inteligencia artificial prohíbe el artículo 5?»
+- **Sistemas de alto riesgo:** «Según el artículo 6, ¿cuándo se considera que un sistema de IA es de alto riesgo?»
+- **Definición de sistema de IA:** «¿Cómo define el Reglamento un sistema de IA en el artículo 3?»
+
+Puedes copiarlas en `POST /ask` desde <http://127.0.0.1:8000/docs>. La respuesta concreta depende de los fragmentos recuperados y del modelo; el asistente puede abstenerse si no encuentra evidencia suficiente.
+
 ## Pruebas
 
 Ejecuta la suite automatizada con:
